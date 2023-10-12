@@ -1,4 +1,5 @@
 export interface Music{
+    id : number
     name : string
     genero: string
     album: string
