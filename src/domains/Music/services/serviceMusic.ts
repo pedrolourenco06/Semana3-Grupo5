@@ -6,6 +6,21 @@ const prisma = new PrismaClient;
 
 class serviceMusic{
 	async create(body : Music) {
+		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
+			throw new Error('Id do artista precisa ser um número');
+		}
+		if (!isNaN(Number(body.photo)) || body.photo == ''){
+			throw new Error('A photo deve ser um link');
+		}
+		if (body.name == ''){
+			throw new Error('O artista precisa de um nome');
+		}
+		if (body.genero == ''){
+			throw new Error('O genero precisa de um nome');
+		}
+		if (body.album == ''){
+			throw new Error('O album precisa de um nome');
+		}
 		const lerArt = await prisma.artist.findUnique({
 			where:{id:body.artistaId}
 		});
