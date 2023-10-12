@@ -2,6 +2,7 @@
 CREATE TABLE "User" (
     "email" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "photo" TEXT,
     "premium" BOOLEAN NOT NULL DEFAULT false
 );
@@ -20,8 +21,8 @@ CREATE TABLE "Music" (
     "name" TEXT NOT NULL,
     "genero" TEXT NOT NULL,
     "album" TEXT NOT NULL,
-    "artistaId" INTEGER,
-    CONSTRAINT "Music_artistaId_fkey" FOREIGN KEY ("artistaId") REFERENCES "Artist" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    "artistaId" INTEGER NOT NULL,
+    CONSTRAINT "Music_artistaId_fkey" FOREIGN KEY ("artistaId") REFERENCES "Artist" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
