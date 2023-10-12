@@ -11,36 +11,36 @@ datasource db {
 }
 
 model User{
-  email String @id
-  name String
+  email    String @id
+  name     String
   password String
-  photo String?
-  premium Boolean @default(false)
-  music Playlist[]
+  photo    String?
+  premium  Boolean @default(false)
+  music    Playlist[]
 }
 
 model Artist{
-  id Int @id @default(autoincrement())
-  photo String
-  name String
+  id      Int @id @default(autoincrement())
+  photo   String
+  name    String
   streams Int
-  music Music[]
+  music   Music[]
 }
 
 model Music{
-  id Int @id @default(autoincrement())
-  name String
-  genero String
-  album String
-  artista Artist @relation(fields: [artistaId], references: [id])
+  id        Int @id @default(autoincrement())
+  name      String
+  genero    String
+  album     String
+  artista   Artist @relation(fields: [artistaId], references: [id])
   artistaId Int
-  playlist Playlist[]
+  playlist  Playlist[]
 }
 
 model Playlist{
-  user User @relation(fields: [userId], references: [email])
-  userId String
-  music Music @relation(fields: [musicId], references: [id])
+  user    User @relation(fields: [userId], references: [email])
+  userId  String
+  music   Music @relation(fields: [musicId], references: [id])
   musicId Int
   @@id([userId,musicId])
 }
