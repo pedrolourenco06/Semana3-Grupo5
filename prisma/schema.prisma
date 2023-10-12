@@ -13,6 +13,7 @@ datasource db {
 model User{
   email String @id
   name String
+  password String
   photo String?
   premium Boolean @default(false)
   music Playlist[]
