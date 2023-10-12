@@ -50,6 +50,12 @@ class serviceMusic{
 		});
 		return criar;
 	}
+	async read(){
+		const ler = await prisma.music.findMany({
+			include:{artista:true}
+		});
+		return ler;
+	}
 }
 
 export default new serviceMusic;
