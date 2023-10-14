@@ -19,11 +19,20 @@ export async function lerMusicas(){
 	}
 }
 
-export async function atualizarMusicas(body : Music) {
+export async function atualizarMusicas(body: Music) {
 	try{
 		const atualizar = await serviceMusic.update(body);
 		console.log(atualizar);
 	}catch(error){
-		console.log(Error);
+		console.log(error);
+	}
+}
+
+export async function deletarMusica(id : number) {
+	try{
+		await serviceMusic.delete(id);
+		console.log('A música foi deletada com sucesso.');
+	}catch(error){
+		console.log(error);
 	}
 }

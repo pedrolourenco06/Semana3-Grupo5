@@ -13,13 +13,16 @@ class serviceMusic{
 			throw new Error('A photo deve ser um link');
 		}
 		if (body.name == ''){
-			throw new Error('O artista precisa de um nome');
+			throw new Error('A musica precisa de um nome');
 		}
 		if (body.genero == ''){
 			throw new Error('O genero precisa de um nome');
 		}
 		if (body.album == ''){
 			throw new Error('O album precisa de um nome');
+		}
+		if (body.artistaName == '' || !isNaN(Number(body.artistaName))){
+			throw new Error ('O artista precisa de um nome');
 		}
 		const lerArt = await prisma.artist.findUnique({
 			where:{id:body.artistaId}
@@ -60,11 +63,8 @@ class serviceMusic{
 		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
 			throw new Error('Id do artista precisa ser um número');
 		}
-		if (!isNaN(Number(body.photo)) || body.photo == ''){
-			throw new Error('A photo deve ser um link');
-		}
 		if (body.name == ''){
-			throw new Error('O artista precisa de um nome');
+			throw new Error('A musica precisa de um nome');
 		}
 		if (body.genero == ''){
 			throw new Error('O genero precisa de um nome');
@@ -82,6 +82,24 @@ class serviceMusic{
 			}
 		});
 		return atualizar;
+	}
+	async delete(id: number){
+		if (id == 0 || isNaN(id)){
+			throw new Error('O id da musica precisa ser um número');
+		}
+		const deletar = await prisma.music.delete({
+			where:{id: id}
+		});
+		const lerArt = await prisma.artist.findUnique({
+			where:{id: deletar.artistaId}
+		});
+		if (lerArt?.streams != undefined){
+			const atualizarArtista = await prisma.artist.update({
+				where:{ id:deletar.artistaId},
+				data:{streams: lerArt?.streams - 1}
+			});
+			return atualizarArtista;
+		}
 	}
 }
 
