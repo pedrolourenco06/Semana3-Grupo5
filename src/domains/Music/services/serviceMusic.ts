@@ -72,6 +72,33 @@ class serviceMusic{
 		if (body.album == ''){
 			throw new Error('O album precisa de um nome');
 		}
+		const ler = await prisma.music.findUnique({
+			where:{id:body.id}
+		});
+		if (ler?.artistaId != null){
+			if (ler.artistaId != body.artistaId){
+				const art1 = await prisma.artist.findUnique({
+					where:{id: ler.artistaId}
+				});
+				const art2 = await prisma.artist.findUnique({
+					where:{id: body.artistaId}
+				});
+				if (art1?.streams != undefined && art2?.streams != undefined){
+					await prisma.artist.update({
+						where:{id:ler.artistaId},
+						data:{
+							streams: art1.streams - 1
+						}
+					});
+					await prisma.artist.update({
+						where:{id:body.artistaId},
+						data:{
+							streams:art2.streams + 1 
+						}
+					});
+				}
+			}
+		}
 		const atualizar = await prisma.music.update({
 			where:{id : body.id},
 			data:{
