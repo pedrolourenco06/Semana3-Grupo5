@@ -84,4 +84,4 @@ class serviceMusic{
 	}
 }
 
-export default new serviceMusic;
+export default new serviceMusic();
