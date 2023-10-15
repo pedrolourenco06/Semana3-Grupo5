@@ -3,6 +3,16 @@ import { User } from "@prisma/client";
 
 class UserService{
     async create(body: User){
+        if(body.email == '' || !isNaN(Number(body.email))){
+            throw new Error('O usuário precisa de uma email');
+        }
+        if(body.name == '' || !isNaN(Number(body.name))){
+            throw new Error('O usuário precisa de um nome');
+        }
+        if(body.password == '' || !isNaN(Number(body.password))){
+            throw new Error('O usuário precisa de uma senha');
+        }
+
         const user = await prisma.user.create({
             data:{
                 email: body.email,
@@ -22,6 +32,15 @@ class UserService{
     }
 
     async update (body: User){
+        if(body.name == ''){
+            throw new Error('O usuário precisa de um nome');
+        }
+        if(body.email == ''){
+            throw new Error('O usuário precisa de um email');
+        }
+        if(body.password == ''){
+            throw new Error('O usuário precisa de uma senha');
+        }
         const atualizar = await prisma.user.update({
             where:{email: body.email},
             data:{
@@ -41,7 +60,7 @@ class UserService{
         });
 
         return deletar;
-        
+
     }
 
 }
