@@ -35,7 +35,7 @@ class serviceMusic{
 						create:{
 							name: body.artistaName,
 							photo: body.photo,
-							streams: 1
+							streams: 0
 						}
 					}
 				}
@@ -43,12 +43,16 @@ class serviceMusic{
 		});
 		return criar;
 	}
+
+
 	async read(){
 		const ler = await prisma.music.findMany({
 			include:{artista:true}
 		});
 		return ler;
 	}
+
+
 	async update(body : Music){
 		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
 			throw new Error('Id do artista precisa ser um número');
@@ -73,6 +77,8 @@ class serviceMusic{
 		});
 		return atualizar;
 	}
+
+
 	async delete(id: number){
 		if (id == 0 || isNaN(id)){
 			throw new Error('O id da musica precisa ser um número');
