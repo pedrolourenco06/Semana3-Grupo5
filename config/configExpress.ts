@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express, {Express} from 'express';
 import cors , {CorsOptions} from 'cors';
+import MusicRouter from '../src/domains/Music/controller/index';
 
 dotenv.config();
 
@@ -16,5 +17,6 @@ app.use(express.json);
 app.use(express.urlencoded({
 	extended:true
 }));
+app.use('/api/musics', MusicRouter);
 
 export default app;
