@@ -31,7 +31,7 @@ class serviceMusic{
 				album: body.album,
 				artista:{
 					connectOrCreate:{
-						where:{id: body.artistaId},
+						where:{id: Number(body.artistaId)},
 						create:{
 							name: body.artistaName,
 							photo: body.photo,

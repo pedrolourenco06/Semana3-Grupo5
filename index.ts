@@ -1,17 +1,5 @@
-import UserService from './src/domains/User/services/UserService';
+import app from './config/configExpress';
 
-async function main(){
-	const body ={
-		email: 'teste2@gmail.com',
-		name: 'teste dois',
-		password: '302111',
-		photo: ' ',
-		teste: ' ',
-		premium: false
-	};
-
-	const user = await UserService.read();
-    
-}
-
-main();
+app.listen(process.env.PORT, ()=>{
+	console.log('Servidor rodando na porta '+ process.env.PORT);
+});
