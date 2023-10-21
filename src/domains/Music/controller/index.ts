@@ -20,4 +20,13 @@ router.get('/', async (req:Request, res:Response, next:NextFunction)=>{
 		next(error);
 	}
 });
+
+router.get('/:id', async(req:Request, res:Response, next:NextFunction)=>{
+	try{
+		const musics = await serviceMusic.findMusic(Number(req.params.id));
+		res.json(musics);
+	}catch(error){
+		next(error);
+	}
+});
 export default router;
