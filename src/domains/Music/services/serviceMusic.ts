@@ -31,7 +31,7 @@ class serviceMusic{
 				album: body.album,
 				artista:{
 					connectOrCreate:{
-						where:{id: body.artistaId},
+						where:{id: Number(body.artistaId)},
 						create:{
 							name: body.artistaName,
 							photo: body.photo,
@@ -67,12 +67,12 @@ class serviceMusic{
 			throw new Error('O album precisa de um nome');
 		}
 		const atualizar = await prisma.music.update({
-			where:{id : body.id},
+			where:{id : Number(body.id)},
 			data:{
 				name:body.name,
 				album:body.album,
 				genero:body.genero,
-				artistaId:body.artistaId
+				artistaId:Number(body.artistaId)
 			}
 		});
 		return atualizar;
@@ -80,13 +80,23 @@ class serviceMusic{
 
 
 	async delete(id: number){
-		if (id == 0 || isNaN(id)){
+		if (id == 0 || isNaN(Number(id))){
 			throw new Error('O id da musica precisa ser um número');
 		}
 		const deletar = await prisma.music.delete({
 			where:{id: id}
 		});
 		return deletar;
+	}
+
+	async findMusic(id:number){
+		if (id == 0 || isNaN(Number(id))){
+			throw new Error('O id da musica precisa ser um número');
+		}
+		const find = await prisma.music.findUnique({
+			where:{id: Number(id)}
+		});
+		return find;
 	}
 }
 
