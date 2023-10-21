@@ -29,4 +29,13 @@ router.get('/:id', async(req:Request, res:Response, next:NextFunction)=>{
 		next(error);
 	}
 });
+
+router.put('/update', async (req:Request, res:Response, next:NextFunction) =>{
+	try{
+		const musics = await serviceMusic.update(req.body);
+		res.json(musics);
+	}catch(error){
+		next(error);
+	}
+});
 export default router;

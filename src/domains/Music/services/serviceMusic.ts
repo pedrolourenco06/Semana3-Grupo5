@@ -67,12 +67,12 @@ class serviceMusic{
 			throw new Error('O album precisa de um nome');
 		}
 		const atualizar = await prisma.music.update({
-			where:{id : body.id},
+			where:{id : Number(body.id)},
 			data:{
 				name:body.name,
 				album:body.album,
 				genero:body.genero,
-				artistaId:body.artistaId
+				artistaId:Number(body.artistaId)
 			}
 		});
 		return atualizar;
