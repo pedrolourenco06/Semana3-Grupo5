@@ -12,4 +12,12 @@ router.post('/create', async(req:Request, res:Response, next:NextFunction) =>{
 	}
 });
 
+router.get('/', async (req:Request, res:Response, next:NextFunction)=>{
+	try{
+		const musics = await serviceMusic.read();
+		res.json(musics);
+	}catch(error){
+		next(error);
+	}
+});
 export default router;
