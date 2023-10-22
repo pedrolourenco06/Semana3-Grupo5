@@ -24,6 +24,9 @@ class serviceMusic{
 		if (body.artistaName == '' || !isNaN(Number(body.artistaName))){
 			throw new Error ('O artista precisa de um nome');
 		}
+		if (body.photo == '' || !isNaN(Number(body.photo))){
+			throw new Error ('O artista precisa de uma foto');
+		}
 		const criar = await prisma.music.create({
 			data:{
 				name: body.name,
@@ -54,6 +57,9 @@ class serviceMusic{
 
 
 	async update(body : Music){
+		if (isNaN(Number(body.id)) || body.id == 0){
+			throw new Error ('Id da musica precisa ser um número');
+		}
 		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
 			throw new Error('Id do artista precisa ser um número');
 		}
