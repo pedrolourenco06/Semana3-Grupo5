@@ -3,9 +3,9 @@ import { Router, Request, Response, NextFunction } from 'express';
 
 const router = Router();
 
-router.post('/:body', async(req: Request, res: Response, next: NextFunction) => {
-    try{
-		const criar = await serviceArtist.create(req.params.body);
+router.post('/create', async(req: Request, res: Response, next: NextFunction) => {
+	try{
+		const criar = await serviceArtist.create(req.body);
 		res.json(criar);
 	}
 	catch(error){
@@ -14,7 +14,7 @@ router.post('/:body', async(req: Request, res: Response, next: NextFunction) => 
 });
 
 router.get('/', async(req: Request, res: Response, next: NextFunction) => {
-    try{
+	try{
 		const ler = await serviceArtist.read();
 		res.json(ler);
 	}
@@ -23,9 +23,9 @@ router.get('/', async(req: Request, res: Response, next: NextFunction) => {
 	}
 });
 
-router.put('/:body', async(req: Request, res: Response, next: NextFunction) => {
-    try{
-		const atualizar = serviceArtist.update(req.params.body);
+router.put('/update', async(req: Request, res: Response, next: NextFunction) => {
+	try{
+		const atualizar = await serviceArtist.update(req.body);
 		res.json(atualizar);
 	}
 	catch(error){
@@ -33,9 +33,9 @@ router.put('/:body', async(req: Request, res: Response, next: NextFunction) => {
 	}
 });
 
-router.delete('/:body', async(req: Request, res: Response, next: NextFunction) => {
-    try{
-		const deletar = serviceArtist.delete(req.params.body);
+router.delete('/delete', async(req: Request, res: Response, next: NextFunction) => {
+	try{
+		const deletar = await serviceArtist.delete(req.body);
 		res.json(deletar);
 	}
 	catch(error){

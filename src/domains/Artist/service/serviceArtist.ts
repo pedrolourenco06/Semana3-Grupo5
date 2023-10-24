@@ -17,16 +17,15 @@ class serviceArtist {
 			throw new Error('As streams são contadas em números!');
 		}
 
-		if(isNaN(body.artistID)) {
+		if(isNaN(Number(body.artistID))) {
 			throw new Error('O ID do artista precisa ser um número!');
 		}
 
 		const newArtist = await prisma.artist.create({
 			data: {
-				id: body.artistID,
 				name: body.name,
 				photo: body.photo,
-				streams: body.streams,
+				streams: Number(body.streams),
 			},
 		});
 
@@ -47,20 +46,20 @@ class serviceArtist {
 			throw new Error('A foto precisa ser um link!');
 		}
 
-		if(isNaN(body.streams)) {
+		if(isNaN(Number(body.streams))) {
 			throw new Error('As streams são contadas em números!');
 		}
 
-		if(isNaN(body.artistID)) {
+		if(isNaN(Number(body.artistID))) {
 			throw new Error('O ID do artista precisa ser um número!');
 		}
 
 		const atualizar = await prisma.artist.update({
-			where: {id: body.artistID},
+			where: {id: Number(body.artistID)},
 			data: {
 				name: body.name,
 				photo: body.photo,
-				streams: body.streams,
+				streams: Number(body.streams),
 			},
 		});
 
@@ -69,7 +68,7 @@ class serviceArtist {
 
 	async delete(body: Artist) {
 		const deletar = await prisma.artist.delete({
-			where: {id: body.artistID},
+			where: {id: Number(body.artistID)},
 		});
 
 		return deletar;
