@@ -63,6 +63,21 @@ class UserService{
 
 	}
 
+	async findUsers (){
+		const users = await prisma.user.findMany();
+
+		return users;
+	}
+
+	async findByEmail (email: string){
+		const user = await prisma.user.findFirst({
+			where:{
+				email: email,
+			}
+		});
+		return user;
+	}
+
 }
 
 export default new UserService();
