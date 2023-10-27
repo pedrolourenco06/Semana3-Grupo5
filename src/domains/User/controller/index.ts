@@ -44,6 +44,16 @@ router.delete('/delete/:email', async(req: Request, res: Response, next: NextFun
     }
 });
 
+router.put('/update', async(req: Request, res: Response, next: NextFunction) => {
+    try{
+        const user = await UserService.update(req.body);
+        res.json(user);
+    }
+    catch(error){
+        next(error);
+    }
+});
+
 
 
 

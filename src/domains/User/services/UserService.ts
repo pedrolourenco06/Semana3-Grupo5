@@ -9,7 +9,7 @@ class UserService{
 		if(body.name == '' || !isNaN(Number(body.name))){
 			throw new Error('O usuário precisa de um nome');
 		}
-		if(body.password == '' || !isNaN(Number(body.password))){
+		if(body.password == ''){
 			throw new Error('O usuário precisa de uma senha');
 		}
 
