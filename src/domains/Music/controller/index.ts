@@ -1,3 +1,4 @@
+import { verifyJWT } from '../../../middlewares/userLogin';
 import serviceMusic from '../services/serviceMusic';
 import { Router, Request, Response, NextFunction } from 'express';
 
@@ -12,7 +13,7 @@ router.post('/create', async(req:Request, res:Response, next:NextFunction) =>{
 	}
 });
 
-router.get('/', async (req:Request, res:Response, next:NextFunction)=>{
+router.get('/',verifyJWT, async (req:Request, res:Response, next:NextFunction)=>{
 	try{
 		const musics = await serviceMusic.read();
 		res.json(musics);
@@ -21,7 +22,7 @@ router.get('/', async (req:Request, res:Response, next:NextFunction)=>{
 	}
 });
 
-router.get('/:id', async(req:Request, res:Response, next:NextFunction)=>{
+router.get('/:id',verifyJWT, async(req:Request, res:Response, next:NextFunction)=>{
 	try{
 		const musics = await serviceMusic.findMusic(Number(req.params.id));
 		res.json(musics);
@@ -30,7 +31,7 @@ router.get('/:id', async(req:Request, res:Response, next:NextFunction)=>{
 	}
 });
 
-router.put('/update', async (req:Request, res:Response, next:NextFunction) =>{
+router.put('/update',verifyJWT, async (req:Request, res:Response, next:NextFunction) =>{
 	try{
 		const musics = await serviceMusic.update(req.body);
 		res.json(musics);
@@ -39,7 +40,7 @@ router.put('/update', async (req:Request, res:Response, next:NextFunction) =>{
 	}
 });
 
-router.delete('/delete/:id',async(req:Request, res:Response, next:NextFunction)=>{
+router.delete('/delete/:id',verifyJWT,async(req:Request, res:Response, next:NextFunction)=>{
 	try{
 		const musics = await serviceMusic.delete(Number(req.params.id));
 		res.json(musics);

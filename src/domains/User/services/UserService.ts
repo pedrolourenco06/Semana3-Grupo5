@@ -19,6 +19,8 @@ class UserService{
 		if(body.password == ''){
 			throw new Error('O usuário precisa de uma senha');
 		}
+		
+		body.password = await this.encryptPassword(body.password);
 
 		const user = await prisma.user.create({
 			data:{
@@ -26,7 +28,7 @@ class UserService{
 				name: body.name,
 				password: body.password,
 				photo: body.photo,
-				premium: body.premium,
+				role: body.role,
 			}
 		});
 
@@ -54,7 +56,7 @@ class UserService{
 				name: body.name,
 				password: body.password,
 				photo: body.photo,
-				premium: body.premium
+				role: body.role
 			}
 		});
 
