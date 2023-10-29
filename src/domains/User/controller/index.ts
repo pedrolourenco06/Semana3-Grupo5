@@ -1,9 +1,10 @@
 import UserService from '../services/UserService';
 import { Router, Request, Response, NextFunction } from 'express';
+import { verifyJWT } from '../../../middlewares/userLogin';
 
 const router = Router();
 
-router.get('/', async(req: Request, res: Response, next: NextFunction) => {
+router.get('/', verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		const users = await UserService.findUsers();
 		res.json(users);
@@ -14,7 +15,7 @@ router.get('/', async(req: Request, res: Response, next: NextFunction) => {
 	}
 });
 
-router.get('/:email', async(req: Request, res: Response, next: NextFunction) => {
+router.get('/:email', verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		const user = await UserService.findByEmail(req.params.email);
 		res.json(user);
@@ -34,7 +35,7 @@ router.post('/create', async(req: Request, res: Response, next: NextFunction) =>
 	}
 });
 
-router.delete('/delete/:email', async(req: Request, res: Response, next: NextFunction) => {
+router.delete('/delete/:email',verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		const user = await UserService.delete(req.params.email);
 		res.json(user);
@@ -44,7 +45,7 @@ router.delete('/delete/:email', async(req: Request, res: Response, next: NextFun
 	}
 });
 
-router.put('/update', async(req: Request, res: Response, next: NextFunction) => {
+router.put('/update',verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		const user = await UserService.update(req.body);
 		res.json(user);

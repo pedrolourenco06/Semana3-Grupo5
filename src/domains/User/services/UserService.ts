@@ -1,7 +1,14 @@
 import prisma from '../../../../config/client';
 import { User } from '@prisma/client';
-
+import bcrypt from 'bcrypt';
 class UserService{
+
+	async encryptPassword(password: string){
+		const saltRounds = 10;
+		const encryptPassword = await bcrypt.hash(password, saltRounds);
+		return encryptPassword;
+	}
+
 	async create(body: User){
 		if(body.email == '' || !isNaN(Number(body.email))){
 			throw new Error('O usuário precisa de uma email');
@@ -12,6 +19,8 @@ class UserService{
 		if(body.password == ''){
 			throw new Error('O usuário precisa de uma senha');
 		}
+		
+		body.password = await this.encryptPassword(body.password);
 
 		const user = await prisma.user.create({
 			data:{
