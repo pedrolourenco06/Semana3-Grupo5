@@ -6,17 +6,18 @@ import {Roles, checkRole } from '../../../middlewares/checkRole';
 
 const router = Router();
 
-router.post('/create', 
-checkRole(Roles.admin),
-async(req: Request, res: Response, next: NextFunction) => {
-	try{
-		await serviceArtist.create(req.body);
-		res.status(statusCodes.CREATED).json('Perfil do artista criado com sucesso!');
-	}
-	catch(error){
-		next(error);
-	}
-});
+router.post('/create',
+	verifyJWT,
+	checkRole(Roles.admin),
+	async(req: Request, res: Response, next: NextFunction) => {
+		try{
+			await serviceArtist.create(req.body);
+			res.status(statusCodes.CREATED).json('Perfil do artista criado com sucesso!');
+		}
+		catch(error){
+			next(error);
+		}
+	});
 
 router.get('/', verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
 	try{
@@ -40,16 +41,16 @@ router.put('/update', verifyJWT, async(req: Request, res: Response, next: NextFu
 
 
 router.delete('/delete',
-verifyJWT,
-checkRole(Roles.admin),
-async(req: Request, res: Response, next: NextFunction) => {
-	try{
-		await serviceArtist.delete(req.body);
-		res.status(statusCodes.SUCCESS).json('Perfil deletado com sucesso!');
-	}
-	catch(error){
-		next(error);
-	}
-});
+	verifyJWT,
+	checkRole(Roles.admin),
+	async(req: Request, res: Response, next: NextFunction) => {
+		try{
+			await serviceArtist.delete(req.body);
+			res.status(statusCodes.SUCCESS).json('Perfil deletado com sucesso!');
+		}
+		catch(error){
+			next(error);
+		}
+	});
 
 export default router;
