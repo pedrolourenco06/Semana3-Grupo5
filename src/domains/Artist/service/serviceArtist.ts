@@ -1,24 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 import { Artist } from '../model/modelArtist';
+import { QueryError } from '../../../../errors/QueryError';
 
 const prisma = new PrismaClient();
 
 class serviceArtist {
 	async create(body: Artist) {
 		if(body.name == '') {
-			throw new Error('O artista precisa de um nome!');
+			throw new QueryError('O artista precisa de um nome!');
 		}
 
 		if(!isNaN(Number(body.photo)) || body.photo == '') {
-			throw new Error('A foto precisa ser um link!');
+			throw new QueryError('A foto precisa ser um link!');
 		}
 
 		if(isNaN(body.streams)) {
-			throw new Error('As streams são contadas em números!');
-		}
-
-		if(isNaN(Number(body.artistID))) {
-			throw new Error('O ID do artista precisa ser um número!');
+			throw new QueryError('As streams são contadas em números!');
 		}
 
 		const newArtist = await prisma.artist.create({
@@ -39,19 +36,15 @@ class serviceArtist {
 
 	async update(body: Artist) {
 		if(body.name == '') {
-			throw new Error('O artista precisa de um nome!');
+			throw new QueryError('O artista precisa de um nome!');
 		}
 
 		if(!isNaN(Number(body.photo)) || body.photo == '') {
-			throw new Error('A foto precisa ser um link!');
+			throw new QueryError('A foto precisa ser um link!');
 		}
 
 		if(isNaN(Number(body.streams))) {
-			throw new Error('As streams são contadas em números!');
-		}
-
-		if(isNaN(Number(body.artistID))) {
-			throw new Error('O ID do artista precisa ser um número!');
+			throw new QueryError('As streams são contadas em números!');
 		}
 
 		const atualizar = await prisma.artist.update({
@@ -66,9 +59,13 @@ class serviceArtist {
 		return atualizar;
 	}
 
-	async delete(body: Artist) {
+	async delete(id: number) {
+		if(isNaN(id)) {
+			throw new QueryError("ID inválido");
+		}
+
 		const deletar = await prisma.artist.delete({
-			where: {id: Number(body.artistID)},
+			where: {id: id},
 		});
 
 		return deletar;

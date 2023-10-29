@@ -1,12 +1,16 @@
 import serviceArtist from '../service/serviceArtist';
 import { Router, Request, Response, NextFunction } from 'express';
+import statusCodes from '../../../../utils/statusCodes';
+import {Roles, checkRole } from '../../../middlewares/checkRole';
 
 const router = Router();
 
-router.post('/create', async(req: Request, res: Response, next: NextFunction) => {
+router.post('/create', 
+checkRole(Roles.admin),
+async(req: Request, res: Response, next: NextFunction) => {
 	try{
-		const criar = await serviceArtist.create(req.body);
-		res.json(criar);
+		await serviceArtist.create(req.body);
+		res.status(statusCodes.CREATED).json('Perfil do artista criado com sucesso!');
 	}
 	catch(error){
 		next(error);
@@ -15,8 +19,8 @@ router.post('/create', async(req: Request, res: Response, next: NextFunction) =>
 
 router.get('/', async(req: Request, res: Response, next: NextFunction) => {
 	try{
-		const ler = await serviceArtist.read();
-		res.json(ler);
+		await serviceArtist.read();
+		res.status(statusCodes.SUCCESS).json('Leitura executada com sucesso!');
 	}
 	catch(error){
 		next(error);
@@ -25,18 +29,20 @@ router.get('/', async(req: Request, res: Response, next: NextFunction) => {
 
 router.put('/update', async(req: Request, res: Response, next: NextFunction) => {
 	try{
-		const atualizar = await serviceArtist.update(req.body);
-		res.json(atualizar);
+		await serviceArtist.update(req.body);
+		res.status(statusCodes.SUCCESS).json('Perfil atualizado com sucesso!');
 	}
 	catch(error){
 		next(error);
 	}
 });
 
-router.delete('/delete', async(req: Request, res: Response, next: NextFunction) => {
+router.delete('/delete',
+checkRole(Roles.admin),
+async(req: Request, res: Response, next: NextFunction) => {
 	try{
-		const deletar = await serviceArtist.delete(req.body);
-		res.json(deletar);
+		await serviceArtist.delete(req.body);
+		res.status(statusCodes.SUCCESS).json('Perfil deletado com sucesso!');
 	}
 	catch(error){
 		next(error);
