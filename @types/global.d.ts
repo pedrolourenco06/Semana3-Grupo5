@@ -12,6 +12,8 @@ declare global{
             DATABASE_URL : string,
             PORT : string,
             APP_URL : string,
+            SECRET_KEY : string,
+            JWT_EXPIRATION: string
         }
     }
 }
