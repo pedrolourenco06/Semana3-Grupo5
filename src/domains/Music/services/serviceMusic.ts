@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Music } from '../Model/modelMusic';
+import serviceArtist from '../../Artist/service/serviceArtist';
+import { QueryError } from '../../../../errors/QueryError';
 
 const prisma = new PrismaClient;
 
@@ -58,20 +60,24 @@ class serviceMusic{
 
 	async update(body : Music){
 		if (isNaN(Number(body.id)) || body.id == 0){
-			throw new Error ('Id da musica precisa ser um número');
+			throw new QueryError ('Id da musica precisa ser um número');
 		}
 		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
-			throw new Error('Id do artista precisa ser um número');
+			throw new QueryError('Id do artista precisa ser um número');
 		}
 		if (body.name == ''){
-			throw new Error('A musica precisa de um nome');
+			throw new QueryError('A musica precisa de um nome');
 		}
 		if (body.genero == ''){
-			throw new Error('O genero precisa de um nome');
+			throw new QueryError('O genero precisa de um nome');
 		}
 		if (body.album == ''){
-			throw new Error('O album precisa de um nome');
+			throw new QueryError('O album precisa de um nome');
 		}
+		if (!await serviceArtist.findArtist(body.artistaId)){
+			throw new QueryError('O artista tem que existir');
+		}
+		
 		const atualizar = await prisma.music.update({
 			where:{id : Number(body.id)},
 			data:{

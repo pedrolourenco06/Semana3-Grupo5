@@ -17,39 +17,47 @@ router.post('/create',
 		}
 	});
 
-router.get('/',verifyJWT, async (req:Request, res:Response, next:NextFunction)=>{
-	try{
-		const musics = await serviceMusic.read();
-		res.json(musics);
-	}catch(error){
-		next(error);
-	}
-});
+router.get('/',
+	verifyJWT, 
+	async (req:Request, res:Response, next:NextFunction)=>{
+		try{
+			const musics = await serviceMusic.read();
+			res.json(musics);
+		}catch(error){
+			next(error);
+		}
+	});
 
-router.get('/:id',verifyJWT, async(req:Request, res:Response, next:NextFunction)=>{
-	try{
-		const musics = await serviceMusic.findMusic(Number(req.params.id));
-		res.json(musics);
-	}catch(error){
-		next(error);
-	}
-});
+router.get('/:id',
+	verifyJWT, 
+	async(req:Request, res:Response, next:NextFunction)=>{
+		try{
+			const musics = await serviceMusic.findMusic(Number(req.params.id));
+			res.json(musics);
+		}catch(error){
+			next(error);
+		}
+	});
 
-router.put('/update',verifyJWT, async (req:Request, res:Response, next:NextFunction) =>{
-	try{
-		const musics = await serviceMusic.update(req.body);
-		res.json(musics);
-	}catch(error){
-		next(error);
-	}
-});
+router.put('/update',
+	verifyJWT, 
+	async (req:Request, res:Response, next:NextFunction) =>{
+		try{
+			const musics = await serviceMusic.update(req.body);
+			res.json(musics);
+		}catch(error){
+			next(error);
+		}
+	});
 
-router.delete('/delete/:id',verifyJWT,async(req:Request, res:Response, next:NextFunction)=>{
-	try{
-		const musics = await serviceMusic.delete(Number(req.params.id));
-		res.json(musics);
-	}catch(error){
-		next(error);
-	}
-});
+router.delete('/delete/:id',
+	verifyJWT,
+	async(req:Request, res:Response, next:NextFunction)=>{
+		try{
+			const musics = await serviceMusic.delete(Number(req.params.id));
+			res.json(musics);
+		}catch(error){
+			next(error);
+		}
+	});
 export default router;

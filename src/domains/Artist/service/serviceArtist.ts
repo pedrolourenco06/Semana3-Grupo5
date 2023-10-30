@@ -61,7 +61,7 @@ class serviceArtist {
 
 	async delete(id: number) {
 		if(isNaN(id)) {
-			throw new QueryError("ID inválido");
+			throw new QueryError('ID inválido');
 		}
 
 		const deletar = await prisma.artist.delete({
@@ -69,6 +69,16 @@ class serviceArtist {
 		});
 
 		return deletar;
+	}
+
+	async findArtist(id: number){
+		if (id == 0 || isNaN(Number(id))){
+			throw new QueryError('O id da musica precisa ser um número');
+		}
+		const find = await prisma.music.findUnique({
+			where:{id: Number(id)}
+		});
+		return find;
 	}
 }
 

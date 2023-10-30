@@ -19,25 +19,29 @@ router.post('/create',
 		}
 	});
 
-router.get('/', verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
-	try{
-		await serviceArtist.read();
-		res.status(statusCodes.SUCCESS).json('Leitura executada com sucesso!');
-	}
-	catch(error){
-		next(error);
-	}
-});
+router.get('/',
+	verifyJWT,
+	async(req: Request, res: Response, next: NextFunction) => {
+		try{
+			await serviceArtist.read();
+			res.status(statusCodes.SUCCESS).json('Leitura executada com sucesso!');
+		}
+		catch(error){
+			next(error);
+		}
+	});
 
-router.put('/update', verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
-	try{
-		await serviceArtist.update(req.body);
-		res.status(statusCodes.SUCCESS).json('Perfil atualizado com sucesso!');
-	}
-	catch(error){
-		next(error);
-	}
-});
+router.put('/update',
+	verifyJWT, 
+	async(req: Request, res: Response, next: NextFunction) => {
+		try{
+			await serviceArtist.update(req.body);
+			res.status(statusCodes.SUCCESS).json('Perfil atualizado com sucesso!');
+		}
+		catch(error){
+			next(error);
+		}
+	});
 
 
 router.delete('/delete',
@@ -49,6 +53,17 @@ router.delete('/delete',
 			res.status(statusCodes.SUCCESS).json('Perfil deletado com sucesso!');
 		}
 		catch(error){
+			next(error);
+		}
+	});
+
+router.get('/:id', 
+	verifyJWT,
+	async(req:Request, res:Response, next:NextFunction)=>{
+		try{
+			const artist = await serviceArtist.findArtist(Number(req.params.id));
+			res.status(statusCodes.SUCCESS).json(artist);
+		}catch(error){
 			next(error);
 		}
 	});
