@@ -37,21 +37,26 @@ router.post('/create', async(req: Request, res: Response, next: NextFunction) =>
 	}
 });
 
-router.delete('/delete/:email',verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
-	try{
-		const user = await UserService.delete(req.params.email);
-		res.json(user);
-	}
-	catch(error){
-		next(error);
-	}
-});
-
-router.put('/update',
+router.delete('/delete/:email',
 	verifyJWT, 
 	async(req: Request, res: Response, next: NextFunction) => {
 		try{
-			const user = await UserService.update(req.body);
+			const user = await UserService.delete(req.params.email, req.user);
+			if (user.email == req.user.email){
+				res.clearCookie('jwt');
+			}
+			res.json(user);
+		}
+		catch(error){
+			next(error);
+		}
+	});
+
+router.put('/update',
+	verifyJWT,
+	async(req: Request, res: Response, next: NextFunction) => {
+		try{
+			const user = await UserService.update(req.body, req.user);
 			res.json(user);
 		}
 		catch(error){
