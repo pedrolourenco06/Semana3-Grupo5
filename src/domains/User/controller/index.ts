@@ -2,6 +2,7 @@ import UserService from '../services/UserService';
 import { Router, Request, Response, NextFunction } from 'express';
 import { loginMiddleware, verifyJWT } from '../../../middlewares/userLogin';
 import statusCodes from '../../../../utils/statusCodes';
+import { logoutMiddleware } from '../../../middlewares/userLogout';
 
 const router = Router();
 
@@ -70,6 +71,16 @@ router.post('/login',
 	}
 );
 
-
+router.post('/logout',
+	verifyJWT,
+	logoutMiddleware,
+	async(req:Request, res:Response, next:NextFunction)=>{
+		try{
+			res.status(statusCodes.NO_CONTENT).end();
+		}catch(error){
+			next(error);
+		}
+	}
+);
 
 export default router;
