@@ -15,7 +15,7 @@ model User{
   name     String
   password String
   photo    String?
-  role  String @default("USER")
+  premium  Boolean @default(false)
   music    Playlist[]
 }
 
