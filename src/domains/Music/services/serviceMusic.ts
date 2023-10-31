@@ -9,25 +9,25 @@ const prisma = new PrismaClient;
 class serviceMusic{
 	async create(body : Music) {
 		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
-			throw new Error('Id do artista precisa ser um número');
+			throw new QueryError('Id do artista precisa ser um número');
 		}
 		if (!isNaN(Number(body.photo)) || body.photo == ''){
-			throw new Error('A photo deve ser um link');
+			throw new QueryError('A photo deve ser um link');
 		}
 		if (body.name == ''){
-			throw new Error('A musica precisa de um nome');
+			throw new QueryError('A musica precisa de um nome');
 		}
 		if (body.genero == ''){
-			throw new Error('O genero precisa de um nome');
+			throw new QueryError('O genero precisa de um nome');
 		}
 		if (body.album == ''){
-			throw new Error('O album precisa de um nome');
+			throw new QueryError('O album precisa de um nome');
 		}
 		if (body.artistaName == '' || !isNaN(Number(body.artistaName))){
-			throw new Error ('O artista precisa de um nome');
+			throw new QueryError ('O artista precisa de um nome');
 		}
 		if (body.photo == '' || !isNaN(Number(body.photo))){
-			throw new Error ('O artista precisa de uma foto');
+			throw new QueryError ('O artista precisa de uma foto');
 		}
 		const criar = await prisma.music.create({
 			data:{
