@@ -1,8 +1,11 @@
 import UserService from '../services/UserService';
 import { Router, Request, Response, NextFunction } from 'express';
-import { verifyJWT } from '../../../middlewares/userLogin';
+
+import { loginMiddleware, verifyJWT } from '../../../middlewares/userLogin';
 import statusCodes from '../../../../utils/statusCodes';
+import { logoutMiddleware } from '../../../middlewares/userLogout';
 import { Roles, checkRole } from '../../../middlewares/checkRole';
+
 
 const router = Router();
 
@@ -37,9 +40,15 @@ router.post('/create', checkRole(Roles.admin), async(req: Request, res: Response
 	}
 });
 
-router.delete('/delete/:email',verifyJWT, checkRole(Roles.admin), async(req: Request, res: Response, next: NextFunction) => {
-	try{
-		const user = await UserService.delete(req.params.email);
+
+router.delete('/delete/:email',
+	verifyJWT, 
+	async(req: Request, res: Response, next: NextFunction) => {
+		try{
+			const user = await UserService.delete(req.params.email, req.user);
+			if (user.email == req.user.email){
+				res.clearCookie('jwt');
+			}
 		res.status(statusCodes.SUCCESS).json("Usuário deletado com sucesso!");
 		res.json(user);
 	}
@@ -50,28 +59,35 @@ router.delete('/delete/:email',verifyJWT, checkRole(Roles.admin), async(req: Req
 
 router.put('/update', verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
 		try{
-			const user = await UserService.update(req.body);
+			const user = await UserService.update(req.body, req.user);
 			res.status(statusCodes.SUCCESS).json("Usuário atualizado com sucesso!");
-			res.json(user);
-		}
 		catch(error){
 			next(error);
 		}
 	});
 
 
+router.post('/login', 
+	loginMiddleware,
+	async(req:Request, res:Response, next:NextFunction)=>{
+		try{
+			res.status(statusCodes.NO_CONTENT).end();
+		}catch(error){
+			next(error);
+		}
+	}
+);
 
-
-
-
-
-
-
-
-
-
-
-
-
+router.post('/logout',
+	verifyJWT,
+	logoutMiddleware,
+	async(req:Request, res:Response, next:NextFunction)=>{
+		try{
+			res.status(statusCodes.NO_CONTENT).end();
+		}catch(error){
+			next(error);
+		}
+	}
+);
 
 export default router;
