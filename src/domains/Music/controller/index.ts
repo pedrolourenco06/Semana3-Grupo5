@@ -11,9 +11,8 @@ router.post('/create',
 	checkRole(Roles.admin),
 	async(req:Request, res:Response, next:NextFunction) =>{
 		try{
-			const musics = await serviceMusic.create(req.body);
-			res.status(statusCodes.CREATED).json("Música criada com sucesso!");
-			res.json(musics);
+			await serviceMusic.create(req.body);
+			res.status(statusCodes.CREATED).json('Música criada com sucesso!');
 		}catch(error){
 			next(error);
 		}
@@ -24,8 +23,7 @@ router.get('/',
 	async (req:Request, res:Response, next:NextFunction)=>{
 		try{
 			const musics = await serviceMusic.read();
-			res.status(statusCodes.SUCCESS).json("Leitura realizada com sucesso!");
-			res.json(musics);
+			res.status(statusCodes.SUCCESS).json(musics);
 		}catch(error){
 			next(error);
 		}
@@ -36,20 +34,19 @@ router.get('/:id',
 	async(req:Request, res:Response, next:NextFunction)=>{
 		try{
 			const musics = await serviceMusic.findMusic(Number(req.params.id));
-			res.status(statusCodes.SUCCESS).json("Leitura realizada com sucesso!");
-			res.json(musics);
+			res.status(statusCodes.SUCCESS).json(musics);
 		}catch(error){
 			next(error);
 		}
 	});
 
 router.put('/update',
-	verifyJWT, 
+	verifyJWT,
+	checkRole(Roles.admin), 
 	async (req:Request, res:Response, next:NextFunction) =>{
 		try{
-			const musics = await serviceMusic.update(req.body);
-			res.status(statusCodes.SUCCESS).json("Atualização realizada com sucesso!");
-			res.json(musics);
+			await serviceMusic.update(req.body);
+			res.status(statusCodes.SUCCESS).json('Atualização realizada com sucesso!');
 		}catch(error){
 			next(error);
 		}
@@ -60,9 +57,8 @@ router.delete('/delete/:id',
 	checkRole(Roles.admin),
 	async(req:Request, res:Response, next:NextFunction)=>{
 		try{
-			const musics = await serviceMusic.delete(Number(req.params.id));
-			res.status(statusCodes.SUCCESS).json("Música deletada com sucesso!");
-			res.json(musics);
+			await serviceMusic.delete(Number(req.params.id));
+			res.status(statusCodes.SUCCESS).json('Música deletada com sucesso!');
 		}catch(error){
 			next(error);
 		}

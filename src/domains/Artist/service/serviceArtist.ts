@@ -47,6 +47,10 @@ class serviceArtist {
 			throw new QueryError('As streams são contadas em números!');
 		}
 
+		if (!await this.findArtist(Number(body.artistID))){
+			throw new QueryError('O artista não existe');
+		}
+
 		const atualizar = await prisma.artist.update({
 			where: {id: Number(body.artistID)},
 			data: {
@@ -60,22 +64,24 @@ class serviceArtist {
 	}
 
 	async delete(id: number) {
-		if(isNaN(id)) {
+		if(isNaN(Number(id))) {
 			throw new QueryError('ID inválido');
 		}
-
+		if (!await this.findArtist(Number(id))){
+			throw new QueryError('O artista não existe');
+		}
 		const deletar = await prisma.artist.delete({
-			where: {id: id},
-		});
+			where: {id: Number(id)},
+		}); 	
 
 		return deletar;
 	}
 
 	async findArtist(id: number){
 		if (id == 0 || isNaN(Number(id))){
-			throw new QueryError('O id da musica precisa ser um número');
+			throw new QueryError('O id do artista precisa ser um número');
 		}
-		const find = await prisma.music.findUnique({
+		const find = await prisma.artist.findUnique({
 			where:{id: Number(id)}
 		});
 		return find;

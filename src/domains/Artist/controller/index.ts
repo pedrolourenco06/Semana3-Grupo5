@@ -23,8 +23,8 @@ router.get('/',
 	verifyJWT,
 	async(req: Request, res: Response, next: NextFunction) => {
 		try{
-			await serviceArtist.read();
-			res.status(statusCodes.SUCCESS).json('Leitura executada com sucesso!');
+			const artist = await serviceArtist.read();
+			res.status(statusCodes.SUCCESS).json(artist);
 		}
 		catch(error){
 			next(error);
@@ -49,7 +49,7 @@ router.delete('/delete',
 	checkRole(Roles.admin),
 	async(req: Request, res: Response, next: NextFunction) => {
 		try{
-			await serviceArtist.delete(req.body);
+			await serviceArtist.delete(req.body.id);
 			res.status(statusCodes.SUCCESS).json('Perfil deletado com sucesso!');
 		}
 		catch(error){
