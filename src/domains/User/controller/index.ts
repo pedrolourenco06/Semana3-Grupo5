@@ -1,6 +1,7 @@
 import UserService from '../services/UserService';
 import { Router, Request, Response, NextFunction } from 'express';
-import { verifyJWT } from '../../../middlewares/userLogin';
+import { loginMiddleware, verifyJWT } from '../../../middlewares/userLogin';
+import statusCodes from '../../../../utils/statusCodes';
 
 const router = Router();
 
@@ -58,17 +59,16 @@ router.put('/update',
 	});
 
 
-
-
-
-
-
-
-
-
-
-
-
+router.post('/login', 
+	loginMiddleware,
+	async(req:Request, res:Response, next:NextFunction)=>{
+		try{
+			res.status(statusCodes.NO_CONTENT).end();
+		}catch(error){
+			next(error);
+		}
+	}
+);
 
 
 
