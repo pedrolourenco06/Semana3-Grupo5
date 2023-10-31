@@ -2,6 +2,7 @@ import { Roles, checkRole } from '../../../middlewares/checkRole';
 import { verifyJWT } from '../../../middlewares/userLogin';
 import serviceMusic from '../services/serviceMusic';
 import { Router, Request, Response, NextFunction } from 'express';
+import statusCodes from '../../../../utils/statusCodes';
 
 const router = Router();
 
@@ -11,6 +12,7 @@ router.post('/create',
 	async(req:Request, res:Response, next:NextFunction) =>{
 		try{
 			const musics = await serviceMusic.create(req.body);
+			res.status(statusCodes.CREATED).json("Música criada com sucesso!");
 			res.json(musics);
 		}catch(error){
 			next(error);
@@ -22,6 +24,7 @@ router.get('/',
 	async (req:Request, res:Response, next:NextFunction)=>{
 		try{
 			const musics = await serviceMusic.read();
+			res.status(statusCodes.SUCCESS).json("Leitura realizada com sucesso!");
 			res.json(musics);
 		}catch(error){
 			next(error);
@@ -33,6 +36,7 @@ router.get('/:id',
 	async(req:Request, res:Response, next:NextFunction)=>{
 		try{
 			const musics = await serviceMusic.findMusic(Number(req.params.id));
+			res.status(statusCodes.SUCCESS).json("Leitura realizada com sucesso!");
 			res.json(musics);
 		}catch(error){
 			next(error);
@@ -44,6 +48,7 @@ router.put('/update',
 	async (req:Request, res:Response, next:NextFunction) =>{
 		try{
 			const musics = await serviceMusic.update(req.body);
+			res.status(statusCodes.SUCCESS).json("Atualização realizada com sucesso!");
 			res.json(musics);
 		}catch(error){
 			next(error);
@@ -52,9 +57,11 @@ router.put('/update',
 
 router.delete('/delete/:id',
 	verifyJWT,
+	checkRole(Roles.admin),
 	async(req:Request, res:Response, next:NextFunction)=>{
 		try{
 			const musics = await serviceMusic.delete(Number(req.params.id));
+			res.status(statusCodes.SUCCESS).json("Música deletada com sucesso!");
 			res.json(musics);
 		}catch(error){
 			next(error);

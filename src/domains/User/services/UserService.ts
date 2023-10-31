@@ -14,13 +14,13 @@ class UserService{
 
 	async create(body: User){
 		if(body.email == '' || !isNaN(Number(body.email))){
-			throw new Error('O usuário precisa de uma email');
+			throw new QueryError('O usuário precisa de uma email.');
 		}
 		if(body.name == '' || !isNaN(Number(body.name))){
-			throw new Error('O usuário precisa de um nome');
+			throw new QueryError('O usuário precisa de um nome.');
 		}
 		if(body.password == ''){
-			throw new Error('O usuário precisa de uma senha');
+			throw new QueryError('O usuário precisa de uma senha.');
 		}
 		
 		body.password = await this.encryptPassword(body.password);
@@ -45,13 +45,13 @@ class UserService{
 
 	async update (body: User, currentUser: User){
 		if(body.name == ''){
-			throw new Error('O usuário precisa de um nome');
+			throw new QueryError('O usuário precisa de um nome.');
 		}
 		if(body.email == ''){
-			throw new Error('O usuário precisa de um email');
+			throw new QueryError('O usuário precisa de um email.');
 		}
 		if(body.password == ''){
-			throw new Error('O usuário precisa de uma senha');
+			throw new QueryError('O usuário precisa de uma senha.');
 		}
 		if (!await this.findByEmail(body.email)){
 			throw new QueryError('O usuário não existe');
@@ -71,6 +71,9 @@ class UserService{
 				role: body.role
 			}
 		});
+		if(!atualizar){
+			throw new QueryError('Não existe um usuário com o email informado.');
+		}
 
 		return atualizar;
 	}
@@ -87,7 +90,9 @@ class UserService{
 		const deletar = await prisma.user.delete({
 			where: {email: email}
 		});
-
+		if(!deletar){
+			throw new QueryError('Não existe um usuário com o email informado.');
+		}
 		return deletar;
 
 	}
@@ -104,6 +109,9 @@ class UserService{
 				email: email,
 			}
 		});
+		if(!user){
+			throw new QueryError('Não existe um usuário com o email informado.');
+		}
 		return user;
 	}
 
