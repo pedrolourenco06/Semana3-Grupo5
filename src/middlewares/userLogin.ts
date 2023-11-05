@@ -26,12 +26,12 @@ export async function loginMiddleware(req:Request, res:Response, next:NextFuncti
 		const user = await UserService.findByEmail(req.body.email);
 		if(!user){
 			res.status(statusCodes.UNAUTHORIZED).json('E-mail ou senha incorretos');
-			throw new PermissionError('E-mail ou senha incorretos');
+			throw new PermissionError('E-mail e/ou senha incorretos');
 		}else{
 			const matchingPassword = await bcrypt.compare(req.body.password, user.password);
 			if(!matchingPassword){
-				res.status(statusCodes.UNAUTHORIZED).json('E-mail ou senha incorretos');
-				throw new PermissionError('E-mail ou senha incorretos');
+				res.status(statusCodes.UNAUTHORIZED).json('E-mail e/ou senha incorretos');
+				throw new PermissionError('E-mail e/ou senha incorretos');
 			}
 		}
 
