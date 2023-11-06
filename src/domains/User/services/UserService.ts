@@ -82,7 +82,7 @@ class UserService{
 		const user = await this.findByEmail(email);
 		
 		if (!user){
-			throw new QueryError('O usuário não existe');
+			throw new QueryError('O usuário não existe.');
 		}
 		if (email != currentUser.email && currentUser.role != Roles.admin){
 			throw new PermissionError('Você não tem permissão para realizar essa ação');
