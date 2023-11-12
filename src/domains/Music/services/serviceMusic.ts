@@ -1,18 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-import { Music } from '../Model/modelMusic';
+import { Music } from '@prisma/client';
 import serviceArtist from '../../Artist/service/serviceArtist';
 import { QueryError } from '../../../../errors/QueryError';
-
-const prisma = new PrismaClient;
-
+import prisma from '../../../../config/client';
 
 class serviceMusic{
 	async create(body : Music) {
 		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
 			throw new QueryError('Id do artista precisa ser um número');
-		}
-		if (!isNaN(Number(body.photo)) || body.photo == ''){
-			throw new QueryError('A photo deve ser um link');
 		}
 		if (body.name == ''){
 			throw new QueryError('A musica precisa de um nome');
@@ -23,11 +17,9 @@ class serviceMusic{
 		if (body.album == ''){
 			throw new QueryError('O album precisa de um nome');
 		}
-		if (body.artistaName == '' || !isNaN(Number(body.artistaName))){
-			throw new QueryError ('O artista precisa de um nome');
-		}
-		if (body.photo == '' || !isNaN(Number(body.photo))){
-			throw new QueryError ('O artista precisa de uma foto');
+		const artist = await serviceArtist.findArtist(body.artistaId);
+		if(!artist){
+			throw new QueryError('O artista não existe');
 		}
 		const criar = await prisma.music.create({
 			data:{
@@ -35,13 +27,8 @@ class serviceMusic{
 				genero: body.genero,
 				album: body.album,
 				artista:{
-					connectOrCreate:{
-						where:{id: Number(body.artistaId)},
-						create:{
-							name: body.artistaName,
-							photo: body.photo,
-							streams: 0
-						}
+					connect:{
+						id: body.artistaId
 					}
 				}
 			}

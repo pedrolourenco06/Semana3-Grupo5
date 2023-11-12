@@ -4,7 +4,7 @@
   "description": "Repositório para realização da atividade da semana 3 do processo do treinee",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "start": "tsnd --respawn --transpile-only --exit-child=true --rs index.ts"
   },
   "author": "",
@@ -26,9 +26,11 @@
     "@types/cors": "^2.8.15",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.20",
+    "@types/jest": "^29.5.8",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
     "@typescript-eslint/parser": "^6.7.5",
     "eslint": "^8.51.0",
+    "jest": "^29.7.0",
     "prisma": "^5.4.2",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0"

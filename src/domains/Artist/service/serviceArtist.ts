@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../../config/client';
 import { Artist } from '../model/modelArtist';
 import { QueryError } from '../../../../errors/QueryError';
 
-const prisma = new PrismaClient();
 
 class serviceArtist {
 	async create(body: Artist) {
