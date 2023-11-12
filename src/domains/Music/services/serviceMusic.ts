@@ -8,13 +8,13 @@ class serviceMusic{
 		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
 			throw new QueryError('Id do artista precisa ser um número');
 		}
-		if (body.name == ''){
+		if (body.name == '' || body.name == undefined){
 			throw new QueryError('A musica precisa de um nome');
 		}
-		if (body.genero == ''){
+		if (body.genero == ''||body.genero == undefined){
 			throw new QueryError('O genero precisa de um nome');
 		}
-		if (body.album == ''){
+		if (body.album == '' || body.album == undefined){
 			throw new QueryError('O album precisa de um nome');
 		}
 		const artist = await serviceArtist.findArtist(body.artistaId);
