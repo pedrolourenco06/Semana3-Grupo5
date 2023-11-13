@@ -16,6 +16,7 @@ jest.mock('../../../../config/client.ts',()=>({
 		create:jest.fn(),
 		update:jest.fn(),
 		findUnique:jest.fn(),
+		delete:jest.fn()
 	}
 }));
 jest.mock('../../Artist/service/serviceArtist.ts',()=>{
@@ -166,7 +167,7 @@ describe('create', () => {
 
 describe('update',()=>{
 	beforeEach(()=>{
-		jest.restoreAllMocks();
+		jest.resetAllMocks();
 		jest.clearAllMocks();
 	});
 	test('Metodo recebe um objeto com valores de musica => da update no banco de dados',async()=>{
@@ -374,9 +375,9 @@ describe('update',()=>{
 
 describe('findMusic', ()=>{
 	beforeEach(()=>{
-		jest.restoreAllMocks;
-		jest.clearAllMocks;
-	});
+		jest.resetAllMocks();;
+		jest.clearAllMocks();
+	})
 
 	test('Metodo recebe um id => Deleta musica com o id do banco de dados', async()=>{
 		const musicid = 1;
@@ -441,4 +442,71 @@ describe('findMusic', ()=>{
 	});
 });
 
+describe('delete', ()=>{
+	beforeEach(()=>{
+		jest.resetAllMocks();
+		jest.clearAllMocks();
+	});
+
+	test('Metodo recebe um id => Deleta a musica que possuí o id', async()=>{
+		const musicId = 1;
+
+		jest.mocked(prisma).music.findUnique.mockImplementation(
+			()=>{
+				return {} as any;
+			}
+		);
+
+		const deleteMock = jest.spyOn(prisma.music,'delete').mockImplementation(
+			()=>{
+				return {} as any;
+			}
+		);
+
+		await serviceMusic.delete(1);
+
+		expect(deleteMock).toBeCalledTimes(1);
+		expect(deleteMock.mock.calls[0][0]).toEqual({
+			where:{
+				id: musicId
+			}
+		});
+	});
+
+	test('Metodo recebe um id como string=> Retorna erro', async()=>{
+		const musicId = '';
+
+		return expect(
+			async()=>{
+				await serviceMusic.delete(musicId);
+			}
+		).rejects.toThrowError(new QueryError('O id da musica precisa ser um número'));
+	});
+
+	test('Metodo recebe um id como 0 => Retorna erro', async()=>{
+		const musicId = 0;
+
+		return expect(
+			async()=>{
+				await serviceMusic.delete(musicId);
+			}
+		).rejects.toThrowError(new QueryError('O id da musica precisa ser um número'));
+	});
+
+	test('Metodo recebe uma musica que não existe => Retorna erro', async()=>{
+		const musicId = 1;
+
+		jest.mocked(prisma).music.findUnique.mockImplementation(
+			()=>{
+				return undefined as any;
+			}
+		);
+
+		return expect(
+			async()=>{
+				(await serviceMusic.delete(musicId));
+			}
+		).rejects.toThrowError(new QueryError('A música não existe'));
+	});
+});
 

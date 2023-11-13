@@ -88,7 +88,9 @@ class serviceMusic{
 		if (id == 0 || isNaN(Number(id))){
 			throw new QueryError('O id da musica precisa ser um número');
 		}
-		if (!await this.findMusic){
+		if (!await prisma.music.findUnique({
+			where:{id: id}
+		})){
 			throw new QueryError('A música não existe');
 		}
 		const deletar = await prisma.music.delete({
