@@ -1,33 +1,25 @@
-import { PrismaClient } from '@prisma/client';
-import { Music } from '../Model/modelMusic';
+import { Music } from '@prisma/client';
 import serviceArtist from '../../Artist/service/serviceArtist';
 import { QueryError } from '../../../../errors/QueryError';
-
-const prisma = new PrismaClient;
-
+import prisma from '../../../../config/client';
 
 class serviceMusic{
 	async create(body : Music) {
 		if (isNaN(Number(body.artistaId)) || body.artistaId == 0){
 			throw new QueryError('Id do artista precisa ser um número');
 		}
-		if (!isNaN(Number(body.photo)) || body.photo == ''){
-			throw new QueryError('A photo deve ser um link');
-		}
-		if (body.name == ''){
+		if (body.name == '' || body.name == undefined){
 			throw new QueryError('A musica precisa de um nome');
 		}
-		if (body.genero == ''){
+		if (body.genero == ''||body.genero == undefined){
 			throw new QueryError('O genero precisa de um nome');
 		}
-		if (body.album == ''){
+		if (body.album == '' || body.album == undefined){
 			throw new QueryError('O album precisa de um nome');
 		}
-		if (body.artistaName == '' || !isNaN(Number(body.artistaName))){
-			throw new QueryError ('O artista precisa de um nome');
-		}
-		if (body.photo == '' || !isNaN(Number(body.photo))){
-			throw new QueryError ('O artista precisa de uma foto');
+		const artist = await serviceArtist.findArtist(body.artistaId);
+		if(!artist){
+			throw new QueryError('O artista não existe');
 		}
 		const criar = await prisma.music.create({
 			data:{
@@ -35,13 +27,8 @@ class serviceMusic{
 				genero: body.genero,
 				album: body.album,
 				artista:{
-					connectOrCreate:{
-						where:{id: Number(body.artistaId)},
-						create:{
-							name: body.artistaName,
-							photo: body.photo,
-							streams: 0
-						}
+					connect:{
+						id: body.artistaId
 					}
 				}
 			}
@@ -77,7 +64,13 @@ class serviceMusic{
 		if (!await serviceArtist.findArtist(body.artistaId)){
 			throw new QueryError('O artista tem que existir');
 		}
-		
+		if (!await prisma.music.findUnique({
+			where:{
+				id: Number(body.id)
+			}
+		})){
+			throw new QueryError('A musica não existe');
+		}
 		const atualizar = await prisma.music.update({
 			where:{id : Number(body.id)},
 			data:{
@@ -93,7 +86,12 @@ class serviceMusic{
 
 	async delete(id: number){
 		if (id == 0 || isNaN(Number(id))){
-			throw new Error('O id da musica precisa ser um número');
+			throw new QueryError('O id da musica precisa ser um número');
+		}
+		if (!await prisma.music.findUnique({
+			where:{id: id}
+		})){
+			throw new QueryError('A música não existe');
 		}
 		const deletar = await prisma.music.delete({
 			where:{id: id}
@@ -103,11 +101,14 @@ class serviceMusic{
 
 	async findMusic(id:number){
 		if (id == 0 || isNaN(Number(id))){
-			throw new Error('O id da musica precisa ser um número');
+			throw new QueryError('O id da musica precisa ser um número');
 		}
 		const find = await prisma.music.findUnique({
 			where:{id: Number(id)}
 		});
+		if (!find){
+			throw new QueryError('A música não existe');
+		}
 		return find;
 	}
 }

@@ -1,6 +1,5 @@
 import UserService from '../services/UserService';
 import { Router, Request, Response, NextFunction } from 'express';
-
 import { loginMiddleware, verifyJWT } from '../../../middlewares/userLogin';
 import statusCodes from '../../../../utils/statusCodes';
 import { logoutMiddleware } from '../../../middlewares/userLogout';
@@ -22,8 +21,14 @@ router.get('/', verifyJWT, async(req: Request, res: Response, next: NextFunction
 router.get('/:email', verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		const user = await UserService.findByEmail(req.params.email);
-		res.status(statusCodes.SUCCESS).json(user);
-		res.json(user);
+		const newUser = {
+			email:user.email,
+			name:user.name,
+			photo:user.photo,
+			role:user.role,
+			music:user.music
+		};
+		res.status(statusCodes.SUCCESS).json(newUser);
 	}
 	catch(error){
 		next(error);

@@ -98,7 +98,15 @@ class UserService{
 	}
 
 	async findUsers (){
-		const users = await prisma.user.findMany();
+		const users = await prisma.user.findMany({
+			select:{
+				email:true,
+				name:true,
+				password:false,
+				photo:true,
+				role:true,
+			}
+		});
 
 		return users;
 	}
@@ -107,6 +115,15 @@ class UserService{
 		const user = await prisma.user.findFirst({
 			where:{
 				email: email,
+			},
+			include:{
+				music:{
+					select:{
+						music:true,
+						userId:false,
+						musicId:false
+					}
+				}
 			}
 		});
 		if(!user){
