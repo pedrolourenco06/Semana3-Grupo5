@@ -65,9 +65,7 @@ router.put('/update', verifyJWT, async(req: Request, res: Response, next: NextFu
 });
 
 
-router.post('/login', 
-	loginMiddleware,
-	async(req:Request, res:Response, next:NextFunction)=>{
+router.post('/login', loginMiddleware, async(req:Request, res:Response, next:NextFunction)=>{
 		try{
 			res.status(statusCodes.NO_CONTENT).end();
 		}catch(error){
