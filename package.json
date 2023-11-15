@@ -4,7 +4,7 @@
   "description": "Repositório para realização da atividade da semana 3 do processo do treinee",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --verbose",
     "start": "tsnd --respawn --transpile-only --exit-child=true --rs index.ts"
   },
   "author": "",

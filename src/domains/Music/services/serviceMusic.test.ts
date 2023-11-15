@@ -16,7 +16,8 @@ jest.mock('../../../../config/client.ts',()=>({
 		create:jest.fn(),
 		update:jest.fn(),
 		findUnique:jest.fn(),
-		delete:jest.fn()
+		delete:jest.fn(),
+		findMany:jest.fn(),
 	}
 }));
 jest.mock('../../Artist/service/serviceArtist.ts',()=>{
@@ -321,7 +322,7 @@ describe('update',()=>{
 			async()=>{
 				await serviceMusic.update(updateMock);
 			}
-		).rejects.toThrowError(new QueryError('O album precisa de um nome'))
+		).rejects.toThrowError(new QueryError('O album precisa de um nome'));
 	});
 
 	test('Metodo recebe um artista inexistente => Retorna um erro', async()=>{
@@ -377,7 +378,7 @@ describe('findMusic', ()=>{
 	beforeEach(()=>{
 		jest.resetAllMocks();;
 		jest.clearAllMocks();
-	})
+	});
 
 	test('Metodo recebe um id => Deleta musica com o id do banco de dados', async()=>{
 		const musicid = 1;
@@ -413,7 +414,7 @@ describe('findMusic', ()=>{
 			async()=>{
 				await serviceMusic.findMusic(musicid);
 			}
-		).rejects.toThrowError(new QueryError('O id da musica precisa ser um número'))
+		).rejects.toThrowError(new QueryError('O id da musica precisa ser um número'));
 	});
 
 	test('Metodo recebe um id como 0 => Retorna um erro', async()=>{
@@ -507,6 +508,55 @@ describe('delete', ()=>{
 				(await serviceMusic.delete(musicId));
 			}
 		).rejects.toThrowError(new QueryError('A música não existe'));
+	});
+});
+
+describe('FindAllMusics', ()=>{
+	beforeEach(()=>{
+		jest.resetAllMocks();
+		jest.clearAllMocks();
+	});
+	test.each([
+		{
+			usuarios:
+			[
+				{
+					id:1,
+					name:'Just the two of us',
+					genero:'Pop',
+					album:'Sei la',
+					artistaId:1
+				},
+			]
+		},
+		{
+			usuarios:
+			[
+				{
+					id:1,
+					name:'Bad guy',
+					genero:'Pop',
+					album:'Não sei',
+					artistaId:1,
+				},
+				{
+					id:2,
+					name:'Teste',
+					genero:'Teste',
+					album:'Teste',
+					artistaId:'Teste'
+				},
+			],
+		},
+		{
+			usuarios:
+			[]
+		}
+	])('%j',async 	({usuarios})=>{
+		jest.mocked(prisma).music.findMany.mockReturnValue(usuarios as any);
+
+		const teste = await serviceMusic.read();
+		expect(teste).toEqual(expect.arrayContaining(usuarios));
 	});
 });
 
