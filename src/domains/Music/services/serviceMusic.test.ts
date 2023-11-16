@@ -376,7 +376,7 @@ describe('update',()=>{
 
 describe('findMusic', ()=>{
 	beforeEach(()=>{
-		jest.resetAllMocks();;
+		jest.resetAllMocks();
 		jest.clearAllMocks();
 	});
 
@@ -424,7 +424,7 @@ describe('findMusic', ()=>{
 			async()=>{
 				await serviceMusic.findMusic(musicid);
 			}
-		).rejects.toThrowError(new QueryError('O id da musica precisa ser um número'))
+		).rejects.toThrowError(new QueryError('O id da musica precisa ser um número'));
 	});
 
 	test('Metodo recebe uma musica que não existe => Retorna erro', async()=>{
