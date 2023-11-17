@@ -71,12 +71,11 @@ router.put('/update', verifyJWT, async(req: Request, res: Response, next: NextFu
 
 
 router.post('/login', loginMiddleware, async(req:Request, res:Response, next:NextFunction)=>{
-		try{
-			res.status(statusCodes.NO_CONTENT).end();
-		}catch(error){
-			next(error);
-		}
-	}
+	try{
+		res.status(statusCodes.NO_CONTENT).end();
+	}catch(error){
+		next(error);
+	}	}
 );
 
 router.post('/logout',
@@ -91,4 +90,22 @@ router.post('/logout',
 	}
 );
 
+
+router.put('/createPlay', async(req:Request, res:Response, next:NextFunction)=>{
+	try{
+		await UserService.createPlaylist(req.body.id, req.body.email);
+		res.status(statusCodes.CREATED).end();
+	}catch(error){
+		next(error);
+	}
+});
+
+router.delete('/deletePlay', async(req:Request, res:Response, next:NextFunction)=>{
+	try{
+		await UserService.deletePlaylist(req.body.id, req.body.email);
+		res.status(statusCodes.SUCCESS).end();
+	}catch(error){
+		next(error);
+	}
+});
 export default router;

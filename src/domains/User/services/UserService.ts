@@ -15,7 +15,7 @@ class UserService{
 
 	async create(body: User){
 		if(body.email == '' || !isNaN(Number(body.email)) || body.email == undefined){
-			throw new QueryError('O usuário precisa de uma email.');
+			throw new QueryError('O usuário precisa de um email.');
 		}
 		if(body.name == '' || !isNaN(Number(body.name)) || body.name == undefined){
 			throw new QueryError('O usuário precisa de um nome.');
@@ -54,9 +54,7 @@ class UserService{
 		if(body.password == ''){
 			throw new QueryError('O usuário precisa de uma senha.');
 		}
-		if (!await this.findByEmail(body.email)){
-			throw new QueryError('O usuário não existe');
-		}
+		await this.findByEmail(body.email);
 		if (currentUser.email != body.email &&	 currentUser.role != Roles.admin){
 			throw new PermissionError('Você não tem permissão para realizar essa ação.');
 		}
@@ -80,20 +78,13 @@ class UserService{
 	}
 
 	async delete (email: string, currentUser:User){
-		const user = await this.findByEmail(email);
-		
-		if (!user){
-			throw new QueryError('O usuário não existe.');
-		}
+		await this.findByEmail(email);
 		if (email != currentUser.email && currentUser.role != Roles.admin){
 			throw new PermissionError('Você não tem permissão para realizar essa ação');
 		}
 		const deletar = await prisma.user.delete({
 			where: {email: email}
 		});
-		if(!deletar){
-			throw new QueryError('Não existe um usuário com o email informado.');
-		}
 		return deletar;
 
 	}
@@ -142,22 +133,19 @@ class UserService{
 			throw new QueryError('O email deve ser uma string');
 		}
 
-		if(!await this.findByEmail(email)){
-			throw new QueryError('O usuário não existe');
-		}
+		await this.findByEmail(email);
+		
 
-		if(!await serviceMusic.findMusic(id)){
-			throw new QueryError('A música não existe');
-		}
+		await serviceMusic.findMusic(id);
+	
 
 		await prisma.playlist.create({
 			data:{
-				musicId: id,
-				userId: email,
+				musicId:Number(id),
+				userId:email
 			}
 		});
 	}
-	
 	async deletePlaylist(id:number, email:string){
 		if(id == undefined || isNaN(Number(id))|| id == 0){
 			throw new QueryError('O id deve ser um número');
@@ -167,19 +155,15 @@ class UserService{
 			throw new QueryError('O email deve ser uma string');
 		}
 
-		if(!await this.findByEmail(email)){
-			throw new QueryError('O usuário não existe');
-		}
+		await this.findByEmail(email);
 
-		if(!await serviceMusic.findMusic(id)){
-			throw new QueryError('A música não existe');
-		}
+		await serviceMusic.findMusic(id);
 
 		await prisma.playlist.delete({
 			where:{
 				userId_musicId:{
 					userId:email,
-					musicId:id
+					musicId:Number(id)
 				}
 			}
 		});
