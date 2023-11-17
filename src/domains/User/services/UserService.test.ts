@@ -7,6 +7,7 @@ import { QueryError } from '../../../../errors/QueryError';
 import { Roles } from "../../../middlewares/checkRole";
 import { PermissionError } from "../../../../errors/PermissionError";
 import bcrypt from 'bcrypt';
+import { NotAuthorizedError } from '../../../../errors/NotAuthorizedError';
 
 
 jest.mock('bcrypt');
@@ -20,6 +21,7 @@ jest.mock('../../../../config/client.ts',()=>({
 		delete:jest.fn(),
 		findFirst:jest.fn(),
 		findMany:jest.fn(),
+        findUnique:jest.fn(),
 
 	}
 }));
@@ -155,19 +157,174 @@ describe('update', () => {
             reqUserEmail = 'teste@teste',
             reqUserRole = 'user',
             body = {
-                role: 'admin'
-            }
-        userService.findByEmail.mockImplementation(
+                role: 'user',
+                email: 'teste@teste',
+                name: 'teste',
+                password: 'teste',
+                photo: 'teste'
+            };
+        
+           
+        jest.mocked(prisma).user.findFirst.mockImplementation(
             () => {
-                return {
-                    email: reqUserEmail,
-                    role: reqUserRole
-                }
+                return {} as any;
             }
         );
 
         return expect(async() => {
-            await userService.update(email, reqUserEmail, reqUserRole, body);
+            await userService.update(body, body);
         }).rejects.toThrow(new NotAuthorizedError('Você não tem autorização para mudar seu papel de usuário'));
     });
+
+    test('metodo nao recebe um email ==> retorna um erro', async() => {
+        const updateUser = {
+            role: 'teste',
+            name: 'teste',
+            email: '',
+            password: 'teste',
+            photo: 'teste'
+        };
+
+        const body = {
+            role: 'teste',
+            name: 'teste',
+            email: 'teste@teste',
+            password: 'teste',
+            photo: ''
+        };
+
+        jest.mocked(prisma).user.findUnique.mockImplementation(
+            () => {
+                return {} as any;
+            }
+        );
+
+        return expect(async() => {
+            await userService.update(updateUser, body);
+        }).rejects.toThrowError(new QueryError('O usuario a ser atualizado precisa de um email'));
+    });
+
+    test('metodo nao recebe um nome ==> retorna um erro', async() => {
+        const updateUser = {
+            role: 'teste',
+            name: '',
+            email: 'teste@teste',
+            password: 'teste',
+            photo: 'teste'
+        };
+
+        const body = {
+            role: 'teste',
+            name: 'teste',
+            email: 'teste@teste',
+            password: 'teste',
+            photo: ''
+        };
+
+        jest.mocked(prisma).user.findUnique.mockImplementation(
+            () => {
+                return {} as any;
+            }
+        );
+
+        return expect(async() => {
+            await userService.update(updateUser, body);
+        }).rejects.toThrowError(new QueryError('O usuario a ser atualizado precisa de um nome'));
+    });
+
+    test('metodo recebe um usuario inexistente ==> retorna um erro', async() => {
+        const updateUser = {
+            email: 'naoexiste@teste',
+            name: 'teste',
+            photo: '',
+            password: 'teste',
+            role: 'teste'
+        };
+        const body = {
+            email: 'teste@teste',
+            name: 'teste',
+            photo: 'teste',
+            password: 'teste',
+            role: 'teste'
+        };
+
+        await jest.mocked(prisma).user.findUnique.mockImplementation(
+            () => {
+                return undefined as any;
+            }
+        );
+
+        return expect(
+            async() => {
+                await userService.update(updateUser, body)
+            }
+        ).rejects.toThrowError(new QueryError('Não existe usuário com o email informado'))
+        
+    });
+});
+
+describe('delete', () => {
+    beforeEach(()=>{
+        jest.resetAllMocks();
+    });
+
+    test('recebe um usuário ==> deleta este', async() => {
+        const user = {
+            email: 'teste@teste',
+            delete: () => { }
+        };
+        const body = {
+            email: 'admin@teste',
+            role: 'admin',
+            password: 'teste',
+            name: 'teste',
+            photo: ''
+        };
+
+        await jest.mocked(prisma).user.findUnique.mockImplementation(
+            () => {
+                return user as any;
+            }
+        );
+
+        const usuarioDeleteSpy = jest.spyOn(user, 'delete');
+
+        await userService.delete(user.email, body);
+
+        expect(usuarioDeleteSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('o usuario nao é encontrado ==> retorna um erro', async() => {
+        const email = 'naoexiste@teste';
+        const currentUser = {
+            email: 'admin@teste',
+            role: 'admin',
+            password: 'teste',
+            name: 'teste',
+            photo: ''
+        };
+
+        return expect(async() => {
+            await userService.delete(email, currentUser);
+        }).rejects.toThrowError(new Error(`Não foi encontrado um usuário com o email: ${email}`));
+    });
+
+    test('o usuario nao tem permissão para deletar ==> retorna um erro', async() => {
+        const email = 'test@teste';
+        const currentUser = {
+            email: 'admin@teste',
+            role: 'user',
+            password: 'teste',
+            name: 'teste',
+            photo: ''
+        };
+
+        return expect(async() => {
+            await userService.delete(email, currentUser);
+        }).rejects.toThrow(new NotAuthorizedError('Você não tem permissão para deletar este usuário'));
+    });
+
+
+
 })
+
