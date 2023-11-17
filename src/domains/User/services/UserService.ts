@@ -13,13 +13,13 @@ class UserService{
 	}
 
 	async create(body: User){
-		if(body.email == '' || !isNaN(Number(body.email))){
+		if(body.email == '' || !isNaN(Number(body.email)) || body.email == undefined){
 			throw new QueryError('O usuário precisa de uma email.');
 		}
-		if(body.name == '' || !isNaN(Number(body.name))){
+		if(body.name == '' || !isNaN(Number(body.name)) || body.name == undefined){
 			throw new QueryError('O usuário precisa de um nome.');
 		}
-		if(body.password == ''){
+		if(body.password == '' || body.password == undefined){
 			throw new QueryError('O usuário precisa de uma senha.');
 		}
 		
