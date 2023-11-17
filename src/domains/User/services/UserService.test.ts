@@ -324,7 +324,58 @@ describe('delete', () => {
         }).rejects.toThrow(new NotAuthorizedError('Você não tem permissão para deletar este usuário'));
     });
 
+});
 
+describe('FindAllUsers', () => {
 
-})
+	beforeEach(() => {
+		jest.resetAllMocks()
+	});
+
+    test.each([
+        {
+            usuarios: [
+                {
+                    name: 'pedro'
+                },
+                {
+                    name : 'jose'
+                },
+                {
+                    name: 'luis'
+                }
+            ]
+        }
+    ])('%j', async({usuarios}) => {
+        jest.mocked(prisma).user.findMany.mockReturnValue(usuarios as any);
+
+        const teste = await userService.read();
+        expect(teste).toEqual(expect.arrayContaining(usuarios));
+    });
+
+});
+
+describe('findUser', ()=>{
+	beforeEach(()=>{
+		jest.resetAllMocks();
+		jest.clearAllMocks();
+	});
+    
+    test('metodo recebe um user que não existe ==> retorna um erro', async() => {
+        const userEmail = 'naoexiste@teste';
+
+        jest.mocked(prisma).user.findUnique.mockImplementation(
+            () => {
+                return undefined as any;
+            }
+        );
+
+        return expect (
+            async() => {
+                await userService.findByEmail(userEmail);
+            }
+        ).rejects.toThrowError(new QueryError(`Não existe um usuário com o email: ${userEmail}`));
+    });
+
+});
 
