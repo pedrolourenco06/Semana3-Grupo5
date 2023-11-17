@@ -4,6 +4,7 @@ import prisma from "../../../../config/client";
 import { User } from "@prisma/client";
 import {describe, expect, test} from '@jest/globals';
 import { QueryError } from '../../../../errors/QueryError';
+import { NotAuthorizedError } from "../../../../errors/NotAuthorizedError";
 import { Roles } from "../../../middlewares/checkRole";
 import { PermissionError } from "../../../../errors/PermissionError";
 import bcrypt from 'bcrypt';
@@ -141,3 +142,30 @@ describe('findByEmail', () => {
         }).rejects.toThrowError(new Error(`Não foi encontrado usuário com o email: ${email}`));
     });
 });
+
+describe('update', () => {
+    beforeEach(()=>{
+        jest.resetAllMocks();
+    });
+
+    test('o usuario nao e admin e quer mudar sua propria role ==> lança excessao', async() => {
+        const email = 'teste@teste',
+            reqUserEmail = 'teste@teste',
+            reqUserRole = 'user',
+            body = {
+                role: 'admin'
+            }
+        userService.findByEmail.mockImplementation(
+            () => {
+                return {
+                    email: reqUserEmail,
+                    role: reqUserRole
+                }
+            }
+        );
+
+        return expect(async() => {
+            await userService.update(email, reqUserEmail, reqUserRole, body);
+        }).rejects.toThrow(new NotAuthorizedError('Você não tem autorização para mudar seu papel de usuário'));
+    });
+})
