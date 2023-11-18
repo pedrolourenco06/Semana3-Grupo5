@@ -6,7 +6,7 @@ import { PermissionError } from '../../errors/PermissionError';
 import statusCodes from '../../constants/statusCodes';
 import bcrypt from 'bcrypt';
 
-function generateJWT(user:User, res:Response){
+export function generateJWT(user:User, res:Response){
 	const body = {
 		email: user.email,
 		name: user.name,
@@ -25,7 +25,7 @@ export async function loginMiddleware(req:Request, res:Response, next:NextFuncti
 	try{
 		const user = await UserService.findByEmail(req.body.email);
 		if(!user){
-			res.status(statusCodes.UNAUTHORIZED).json('E-mail ou senha incorretos');
+			res.status(statusCodes.UNAUTHORIZED).json('E-mail e/ou senha incorretos');
 			throw new PermissionError('E-mail e/ou senha incorretos');
 		}else{
 			const matchingPassword = await bcrypt.compare(req.body.password, user.password);

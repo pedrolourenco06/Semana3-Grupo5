@@ -54,7 +54,9 @@ class UserService{
 		if(body.password == ''){
 			throw new QueryError('O usuário precisa de uma senha.');
 		}
-		await this.findByEmail(body.email);
+		if(!await this.findByEmail(body.email)){
+			throw new QueryError('Não existe um usuário com o email informado.');
+		}
 		if (currentUser.email != body.email &&	 currentUser.role != Roles.admin){
 			throw new PermissionError('Você não tem permissão para realizar essa ação.');
 		}
@@ -74,7 +76,9 @@ class UserService{
 	}
 
 	async delete (email: string, currentUser:User){
-		await this.findByEmail(email);
+		if(!await this.findByEmail(email)){
+			throw new QueryError('Não existe um usuário com o email informado.');
+		}
 		if (email != currentUser.email && currentUser.role != Roles.admin){
 			throw new PermissionError('Você não tem permissão para realizar essa ação');
 		}
@@ -114,9 +118,7 @@ class UserService{
 				}
 			}
 		});
-		if(!user){
-			throw new QueryError('Não existe um usuário com o email informado.');
-		}
+		
 		return user;
 	}
 
@@ -129,7 +131,9 @@ class UserService{
 			throw new QueryError('O email deve ser uma string');
 		}
 
-		await this.findByEmail(email);
+		if(!await this.findByEmail(email)){
+			throw new QueryError('Não existe um usuário com o email informado.');
+		}
 		
 
 		await serviceMusic.findMusic(id);
@@ -151,7 +155,9 @@ class UserService{
 			throw new QueryError('O email deve ser uma string');
 		}
 
-		await this.findByEmail(email);
+		if(!await this.findByEmail(email)){
+			throw new QueryError('Não existe um usuário com o email informado.');
+		}
 
 		await serviceMusic.findMusic(id);
 

@@ -11,7 +11,7 @@ export function checkRole(role: Roles) {
 	return (req: Request, res: Response, next: NextFunction) => {
 		try{
 			if(req.user.role != role) {
-				res.status(statusCodes.UNAUTHORIZED);
+				res.status(statusCodes.FORBIDDEN);
 				throw new NotAuthorizedError('Você não tem autorização para isso!');
 			}
 			next();

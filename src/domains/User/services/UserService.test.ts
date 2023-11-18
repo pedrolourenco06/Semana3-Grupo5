@@ -235,18 +235,6 @@ describe('findByEmail', () => {
 
 	});
 
-	test('o usuario não é encontrado ==> lança excessao', async() => {
-		const email = 'teste@teste';
-
-		jest.mocked(prisma).user.findFirst.mockImplementation(
-			()=>{
-				return undefined as any;
-			}
-		);
-		return expect(async() => {
-			await userService.findByEmail(email);
-		}).rejects.toThrowError(new Error('Não existe um usuário com o email informado.'));
-	});
 });
 
 describe('update', () => {

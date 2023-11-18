@@ -49,7 +49,7 @@ describe('CheckRole', ()=>{
 		checkRoleCallback(req, res, next);
 
 		expect(next).toHaveBeenCalledTimes(1);
-		expect(res.status).toHaveBeenCalledWith(statusCodes.UNAUTHORIZED);
+		expect(res.status).toHaveBeenCalledWith(statusCodes.FORBIDDEN);
 		expect(next).toHaveBeenCalledWith(new NotAuthorizedError('Você não tem autorização para isso!'));
 	});
 });
