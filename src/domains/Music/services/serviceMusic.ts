@@ -28,7 +28,7 @@ class serviceMusic{
 				album: body.album,
 				artista:{
 					connect:{
-						id: body.artistaId
+						id: Number(body.artistaId)
 					}
 				}
 			}
@@ -89,12 +89,12 @@ class serviceMusic{
 			throw new QueryError('O id da musica precisa ser um número');
 		}
 		if (!await prisma.music.findUnique({
-			where:{id: id}
+			where:{id: Number(id)}
 		})){
 			throw new QueryError('A música não existe');
 		}
 		const deletar = await prisma.music.delete({
-			where:{id: id}
+			where:{id: Number(id)}
 		});
 		return deletar;
 	}

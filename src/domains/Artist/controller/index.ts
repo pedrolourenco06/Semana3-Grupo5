@@ -32,7 +32,8 @@ router.get('/',
 	});
 
 router.put('/update',
-	verifyJWT, 
+	verifyJWT,
+	checkRole(Roles.admin), 
 	async(req: Request, res: Response, next: NextFunction) => {
 		try{
 			await serviceArtist.update(req.body);

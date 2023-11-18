@@ -52,12 +52,12 @@ router.put('/update',
 		}
 	});
 
-router.delete('/delete/:id',
+router.delete('/delete',
 	verifyJWT,
 	checkRole(Roles.admin),
 	async(req:Request, res:Response, next:NextFunction)=>{
 		try{
-			await serviceMusic.delete(Number(req.params.id));
+			await serviceMusic.delete(Number(req.body.id));
 			res.status(statusCodes.SUCCESS).json('Música deletada com sucesso!');
 		}catch(error){
 			next(error);

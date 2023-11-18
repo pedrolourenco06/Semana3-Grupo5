@@ -91,7 +91,7 @@ router.post('/logout',
 );
 
 
-router.put('/createPlay', async(req:Request, res:Response, next:NextFunction)=>{
+router.post('/createPlay', async(req:Request, res:Response, next:NextFunction)=>{
 	try{
 		await UserService.createPlaylist(req.body.id, req.body.email);
 		res.status(statusCodes.CREATED).end();

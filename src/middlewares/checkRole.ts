@@ -9,12 +9,16 @@ export enum Roles {
 
 export function checkRole(role: Roles) {
 	return (req: Request, res: Response, next: NextFunction) => {
-		if(req.user.role != role) {
-			res.status(statusCodes.UNAUTHORIZED);
-			throw new NotAuthorizedError('Você não tem autorização para isso!');
+		try{
+			if(req.user.role != role) {
+				res.status(statusCodes.UNAUTHORIZED);
+				throw new NotAuthorizedError('Você não tem autorização para isso!');
+			}
+			next();
+		}catch(error){
+			next(error);
 		}
-		next();
 	};
 }
 
-export default { Roles, checkRole };
+

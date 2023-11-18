@@ -80,7 +80,7 @@ describe('create', () => {
 			name:'Teste',
 			genero:'Teste',
 			album:'Teste',
-			artistaId:'Teste'
+			artistaId: ''
 		};
 
 		return expect(
@@ -518,7 +518,7 @@ describe('FindAllMusics', ()=>{
 	});
 	test.each([
 		{
-			usuarios:
+			musicas:
 			[
 				{
 					id:1,
@@ -530,7 +530,7 @@ describe('FindAllMusics', ()=>{
 			]
 		},
 		{
-			usuarios:
+			musicas:
 			[
 				{
 					id:1,
@@ -549,14 +549,14 @@ describe('FindAllMusics', ()=>{
 			],
 		},
 		{
-			usuarios:
+			musicas:
 			[]
 		}
-	])('%j',async 	({usuarios})=>{
-		jest.mocked(prisma).music.findMany.mockReturnValue(usuarios as any);
+	])('%j Metodo recebe um pedido para ver todas as musicas => envia uma array de musicas',async 	({musicas})=>{
+		jest.mocked(prisma).music.findMany.mockReturnValue(musicas as any);
 
 		const teste = await serviceMusic.read();
-		expect(teste).toEqual(expect.arrayContaining(usuarios));
+		expect(teste).toEqual(expect.arrayContaining(musicas));
 	});
 });
 

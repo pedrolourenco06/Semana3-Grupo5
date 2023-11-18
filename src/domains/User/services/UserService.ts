@@ -70,10 +70,6 @@ class UserService{
 				role: body.role
 			}
 		});
-		if(!atualizar){
-			throw new QueryError('Não existe um usuário com o email informado.');
-		}
-
 		return atualizar;
 	}
 
