@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { User } from "@prisma/client";
-import { generateJWT, loginMiddleware, verifyJWT } from "./userLogin";
-import jwt, {JwtPayload} from 'jsonwebtoken';
+import { User } from '@prisma/client';
+import { generateJWT, loginMiddleware, verifyJWT } from './userLogin';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import UserService from "../domains/User/services/UserService";
-import statusCodes from "../../utils/statusCodes";
-import { PermissionError } from "../../errors/PermissionError";
+import UserService from '../domains/User/services/UserService';
+import statusCodes from '../../utils/statusCodes';
+import { PermissionError } from '../../errors/PermissionError';
 
 jest.mock('bcrypt',()=>{
 	return{
@@ -124,7 +124,7 @@ describe('loginMiddleware', ()=>{
 		await loginMiddleware(req,res,next);
 
 		expect(next).toHaveBeenCalledTimes(1);
-		expect(next).toHaveBeenCalledWith(new PermissionError('E-mail e/ou senha incorretos'))
+		expect(next).toHaveBeenCalledWith(new PermissionError('E-mail e/ou senha incorretos'));
 		expect(res.status).toHaveBeenCalledTimes(1);
 		expect(res.status).toHaveBeenCalledWith(statusCodes.UNAUTHORIZED);
 		expect(res.json).toHaveBeenCalledWith('E-mail e/ou senha incorretos');
@@ -158,7 +158,7 @@ describe('loginMiddleware', ()=>{
 		await loginMiddleware(req,res,next);
 		
 		expect(next).toHaveBeenCalledTimes(1);
-		expect(next).toHaveBeenCalledWith(new PermissionError('E-mail e/ou senha incorretos'))
+		expect(next).toHaveBeenCalledWith(new PermissionError('E-mail e/ou senha incorretos'));
 		expect(res.status).toHaveBeenCalledTimes(1);
 		expect(res.status).toHaveBeenCalledWith(statusCodes.UNAUTHORIZED);
 		expect(res.json).toHaveBeenCalledWith('E-mail e/ou senha incorretos');
