@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User{
@@ -15,7 +15,7 @@ model User{
   name     String
   password String
   photo    String?
-  premium  Boolean @default(false)
+  role  String @default("USER")
   music    Playlist[]
 }
 
