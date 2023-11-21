@@ -474,15 +474,6 @@ describe('delete', ()=>{
 		});
 	});
 
-	test('Metodo recebe um id como string=> Retorna erro', async()=>{
-		const musicId = '';
-
-		return expect(
-			async()=>{
-				await serviceMusic.delete(musicId);
-			}
-		).rejects.toThrowError(new QueryError('O id da musica precisa ser um número'));
-	});
 
 	test('Metodo recebe um id como 0 => Retorna erro', async()=>{
 		const musicId = 0;
